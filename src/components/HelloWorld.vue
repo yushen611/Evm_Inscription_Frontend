@@ -29,7 +29,7 @@ const fetchEventLogs = async () => {
     if (receipt && receipt.logs && receipt.logs.length > 0) {
       console.log(receipt.logs);
       const elog = receipt.logs[0]; // 选第一个，因此预期只有一个
-      eventLog.value.data = elog.data;
+      eventLog.value.data = web3.utils.hexToAscii(elog.data);
       eventLog.value.id = elog.topics[1]; // 根据返回值来的
     } else {
       eventLog.value.data = 'No logs found';

@@ -16,11 +16,9 @@ const web3 = new Web3('https://sepolia.infura.io/v3/7f3c9965f1c84f53a5b3239cacdd
 const contract = new web3.eth.Contract(contractABI, contractAddress);
 
 // 用于检测给定的字符串是否为有效的以太坊地址和十六进制字符串
-function validateEthereumInputs(address, hexString) {
+function validateEthereumInputs(address) {
     const isAddressValid = /^0x[a-fA-F0-9]{40}$/.test(address);
-    const isHexStringValid = /^0x[a-fA-F0-9]+$/.test(hexString);
-
-    return isAddressValid && isHexStringValid;
+    return isAddressValid;
 }
 
 // 假设的硬编码私钥
@@ -40,7 +38,7 @@ const inscribeData = async () => {
     alert('Please fill in all fields.');
     return;
   }
-  if (!validateEthereumInputs(accountAddress.value, dataToInscribe.value)) {
+  if (!validateEthereumInputs(accountAddress.value)) {
     alert('Invalid accountAddress or dataToInscribe.');
     return;
   }
