@@ -26,7 +26,7 @@ const privateKey = import.meta.env.VITE_PRIVATE_KEY;
 // public key : 0x5Fe11B415052D6c58195bEB1546E4AF642CC0784
 
 
-// 调用合约的方法
+// 调用合约的方法/*  */
 const inscribeData = async () => {
   if (isButtonDisabled.value) {
     alert('Don\'t click it! transaction has been pending');
