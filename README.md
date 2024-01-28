@@ -62,5 +62,5 @@ npm run build
 # .env文件写什么
 例子
 ```
-VUE_APP_PRIVATE_KEY=xxxx4dfbd82a72fcxxxxxxxxxxx
+VITE_PRIVATE_KEY=xxxx4dfbd82a72fcxxxxxxxxxxx
 ```
