@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "dotenv": "^16.4.1",
+    "element-plus": "^2.5.3",
     "vue": "^3.3.11",
+    "vue-router": "^4.2.5",
     "web3": "^4.4.0"
   },
   "devDependencies": {
