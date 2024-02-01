@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import Web3 from 'web3';
-import { contractABI } from './contractABI';
+import { contractABI } from '../contractABI';
 // import.meta.env.PRIVATE_KEY
 const accountAddress = ref('');
 const dataToInscribe = ref('');
@@ -20,7 +20,6 @@ function validateEthereumInputs(address) {
     const isAddressValid = /^0x[a-fA-F0-9]{40}$/.test(address);
     return isAddressValid;
 }
-
 // 假设的硬编码私钥
 const privateKey = import.meta.env.VITE_PRIVATE_KEY;
 // public key : 0x5Fe11B415052D6c58195bEB1546E4AF642CC0784
