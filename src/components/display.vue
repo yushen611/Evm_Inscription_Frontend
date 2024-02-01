@@ -4,124 +4,168 @@
 
     <!-- 获取所有 NFT -->
     <div>
-        <h3>获取所有 NFT</h3>
+      <h3>获取所有 NFT</h3>
       <button @click="getNFTAll">获取所有 NFT</button>
-      <div v-if="nftAllData.length > 0">
-      <ul>
-        <li v-for="(nft, index) in nftAllData" :key="index">
-          <h4>{{ nft.p }}</h4>
-          <p>{{ nft.description }}</p>
-          <img :src="nft.image" alt="NFT Image" text-align="center">
-          <p>Owner: {{ nft.owner }}</p>
-          <!-- Add other properties as needed -->
-        </li>
-      </ul>
-    </div>
+      <div v-if="loading.nftAll" class="loading">加载中...</div>
+      <div v-else-if="nftAllData.length > 0">
+        <ul class="nft-list">
+          <li v-for="(nft, index) in nftAllData" :key="index" class="nft-item">
+            <h4>{{ nft.p }}</h4>
+            <p>{{ nft.description }}</p>
+            <img :src="nft.image" alt="NFT Image" class="nft-image">
+            <p>Owner: {{ nft.owner }}</p>
+          </li>
+        </ul>
       </div>
+    </div>
 
     <!-- 获取可铸造的 FT -->
     <div>
-        <h3>获取可铸造的 FT</h3>
-          <button @click="getFTCanMint">获取所有可铸造 FT</button>
-          <div v-if="Object.keys(ftCanMintData).length > 0">
-      <ul>
-        <li v-for="(ft, tick) in ftCanMintData" :key="tick">
-          <h4>{{ ft.p }}</h4>
-          <p>操作数: {{ ft.op }}</p>
-          <p>最大值: {{ ft.max }}</p>
-          <p>限制: {{ ft.lim }}</p>
-          <p>减值: {{ ft.dec }}</p>
-        </li>
-      </ul>
+      <h3>获取可铸造的 FT</h3>
+      <button @click="getFTCanMint">获取所有可铸造 FT</button>
+      <div v-if="loading.ftCanMint" class="loading">加载中...</div>
+      <div v-if="Object.keys(ftCanMintData).length > 0">
+        <ul class="ft-can-mint-list">
+          <li v-for="(ft, tick) in ftCanMintData" :key="tick" class="ft-can-mint-item">
+            <h4>{{ ft.p }}</h4>
+            <p>执行操作: {{ ft.op }}</p>
+            <p>最大值: {{ ft.max }}</p>
+            <p>限制: {{ ft.lim }}</p>
+            <p>减值: {{ ft.dec }}</p>
+          </li>
+        </ul>
+      </div>
     </div>
-
-        </div>
 
     <!-- 获取所有 FT -->
     <div>
       <h3>获取所有 FT</h3>
       <button @click="getFTAll">获取所有 FT</button>
+      <div v-if="loading.ftAll" class="loading">加载中...</div>
       <div v-if="ftAllData && Object.keys(ftAllData).length > 0">
-      <ul>
-        <li v-for="(addresses, tick) in ftAllData" :key="tick">
-          <h4>{{ tick }}</h4>
-          <p v-for="(amount, address) in addresses" :key="address">{{ address }}: {{ amount }}</p>
-        </li>
-      </ul>
-    </div>
+        <ul class="ft-all-list">
+          <li v-for="(addresses, tick) in ftAllData" :key="tick" class="ft-all-item">
+            <h4>{{ tick }}</h4>
+            <p v-for="(amount, address) in addresses" :key="address">{{ address }}: {{ amount }}</p>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- 通过 ft_tick 获取 FT -->
     <div class="inputData">
       <h3>通过 ft_tick 获取 FT</h3>
-      <input v-model="ftTick" placeholder="输入 ft_tick" class="fixedInput"/>
+      <input v-model="ftTick" placeholder="输入 ft_tick" class="fixedInput" />
+      <div v-if="loading.ftByTick" class="loading">加载中...</div>
       <button @click="getFTByTick">获取 FT</button>
-      <div v-if="ftByTickData && Object.keys(ftByTickData).length > 0" >
-      <ul>
-        <li v-for="(amount, address) in ftByTickData" :key="address">
-          <h4>{{ address }}</h4>
-          <p>Amount: {{ amount }}</p>
-          <!-- Add other properties as needed -->
-        </li>
-      </ul>
-    </div>
+      <div v-if="ftByTickData && Object.keys(ftByTickData).length > 0" class="ft-by-tick-list">
+        <ul>
+          <li v-for="(amount, address) in ftByTickData" :key="address" class="ft-by-tick-item">
+            <h4>{{ address }}</h4>
+            <p>Amount: {{ amount }}</p>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
+
 import axios from 'axios';
 
 export default {
-  data() {
-    return {
-      nftAllData: "",
-      ftCanMintData: "",
-      ftAllData: "",
-      ftTick: "",
-      ftByTickData: "",
-    };
-  },
-  methods: {
-    async getNFTAll() {
+  setup() {
+    // const loading = ref(false);
+    const loading = reactive({
+      nftAll: false,
+      ftCanMint: false,
+      ftAll: false,
+      ftByTick: false,
+    });
+    const nftAllData = ref([]);
+    const ftCanMintData = ref({});
+    const ftAllData = ref({});
+    const ftTick = ref('');
+    const ftByTickData = ref({});
+
+    //设置loading
+    const setLoading = (action, value) => {
+      loading[action] = value;
+    }
+
+    const getNFTAll = async () => {
       try {
-        const response = await axios.get("/api/token/nft/all"); // 修改请求路径
-        this.nftAllData = response.data.data;
+        setLoading('nftAll', true);
+        const response = await axios.get("/api/token/nft/all");
+        nftAllData.value = response.data.data;
       } catch (error) {
         console.error("Error fetching NFT data:", error);
+      } finally {
+        setLoading('nftAll', false);
       }
-    },
-    async getFTCanMint() {
+    };
+
+    const getFTCanMint = async () => {
       try {
-        const response = await axios.get("/api/token/ft/can_mint"); // 修改请求路径
-        this.ftCanMintData = response.data.data;
+        setLoading('ftCanMint', true);
+        const response = await axios.get("/api/token/ft/can_mint");
+        ftCanMintData.value = response.data.data;
       } catch (error) {
         console.error("Error fetching FT can mint data:", error);
+      }finally{
+        setLoading('ftCanMint', false);
       }
-    },
-    async getFTAll() {
+    };
+
+    const getFTAll = async () => {
       try {
-        const response = await axios.get("/api/token/ft/all"); // 修改请求路径
-        this.ftAllData = response.data.data;
+        setLoading('ftAll', true);
+        const response = await axios.get("/api/token/ft/all");
+        ftAllData.value = response.data.data;
       } catch (error) {
         console.error("Error fetching FT data:", error);
+      }finally{
+        setLoading('ftAll', false);
       }
-    },
-    async getFTByTick() {
+    };
+
+    const getFTByTick = async () => {
       try {
-        const response = await axios.get(`/api/token/ft/${this.ftTick}`); // 修改请求路径
-        this.ftByTickData = response.data.data;
+        setLoading('ftByTick', true);
+        const response = await axios.get(`/api/token/ft/${ftTick.value}`);
+        ftByTickData.value = response.data.data;
       } catch (error) {
         console.error("Error fetching FT by tick data:", error);
+      }finally{
+        setLoading('ftByTick', false);
       }
-    },
+    };
+
+    return {
+      loading,
+      nftAllData,
+      ftCanMintData,
+      ftAllData,
+      ftTick,
+      ftByTickData,
+      getNFTAll,
+      getFTCanMint,
+      getFTAll,
+      getFTByTick,
+    };
   },
 };
 </script>
 
 <style scoped>
 /* Add your component styles here */
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
 
 h1 {
   color: #0a0909;
@@ -130,30 +174,29 @@ h1 {
   margin-bottom: 10px;
 }
 
-.inputData {
-  margin-bottom: 20px;
+.loading {
   text-align: center;
+  color: #666;
+  margin-top: 10px;
 }
 
-input.fixedInput {
-  width: 300px;
-  height: 40px;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
 ul {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      flex-wrap: wrap;
-    }
-    li {
-      width: 80%; /* Make each element take up 30% width of the parent container */
-      margin: 10px;
-      border: 1px solid #ddd; /* Optional: Border style */
-      padding: 10px;
-    }
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+li {
+  width: 80%;
+  margin: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.nft-image {
+  max-width: 100%;
+}
+
+/* Add styles for other lists as needed */
 </style>
