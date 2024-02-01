@@ -8,7 +8,7 @@ const routes =[
     redirect:'/mint'
   },{
     path:'/display',
-    components:display
+    component:display
   },{
     path:'/mint',
     component: mintData

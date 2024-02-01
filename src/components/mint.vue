@@ -35,7 +35,7 @@ async function sendTransaction(){
     const web3 = new Web3(window.ethereum);
 
     // 创建合约实例
-    const data = contract.methods.inscribe(web3.utils.asciiToHex(hashedData.value)).encodeABI();
+    const data = contract.methods.inscribe(web3.utils.asciiToHex(dataToInscribe.value)).encodeABI();
     const gas = await web3.eth.estimateGas({ from: accountAddress.value, to: contractAddress, data: data });
     const nonce = await web3.eth.getTransactionCount(accountAddress.value);
 
@@ -104,32 +104,32 @@ async function checkMetamaskConnection() {
   }
 }
 
-async function fetchDataFromBackend() {
-  try {
-    // 获取前端输入数据，这里可以根据实际情况获取
-    const frontendInput = dataToInscribe;
+// async function fetchDataFromBackend() {
+//   try {
+//     // 获取前端输入数据，这里可以根据实际情况获取
+//     const frontendInput = dataToInscribe;
 
-    // 发送异步请求到后端
-    const response = await fetch('http://127.0.0.1:8000/api', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ frontendInput }),
-    });
+//     // 发送异步请求到后端
+//     const response = await fetch('http://127.0.0.1:8000/api', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ frontendInput }),
+//     });
 
-    if (response.ok) {
-      // 解析并显示从后端获取的数据
-      hashedData.value = await response.json();
-      console.log(hashedData);
-      // 处理从后端获取的数据
-    } else {
-      console.error('从后端获取数据时出错:', response.statusText);
-    }
-  } catch (error) {
-    console.error('发生错误:', error);
-  }
-}
+//     if (response.ok) {
+//       // 解析并显示从后端获取的数据
+//       hashedData.value = await response.json();
+//       console.log(hashedData);
+//       // 处理从后端获取的数据
+//     } else {
+//       console.error('从后端获取数据时出错:', response.statusText);
+//     }
+//   } catch (error) {
+//     console.error('发生错误:', error);
+//   }
+// }
 
 
 
@@ -154,21 +154,21 @@ async function fetchDataFromBackend() {
         <div class="inputData">
           <label for="dataInput">输入数据：</label>
           <input type="text" id="dataInput" v-model="dataToInscribe" class="fixedInput">
-          <p>你输入的数据是: {{ dataToInscribe }}</p>
+          <p>数据转码: {{ web3.utils.asciiToHex(dataToInscribe) }}</p>
         </div>
   
-        <div class="fetchData">
+        <!-- <div class="fetchData">
           <h3>从后端获取的数据：</h3>
           <input type="text" v-model="responseData" readonly class="fixedInput">
           <button @click="fetchDataFromBackend">获取后端数据</button>
-        </div>
+        </div> -->
       </div>
   
       <div class="connect">
         <button @click="connectWallet">连接钱包</button>
         <div v-if="inscribeHash" class="inputData">
-          <p>交易哈希: {{ inscribeHash }}</p>
         </div>
+        <p>交易哈希: {{ inscribeHash }}</p>
       </div>
     </div>
   </template>
@@ -177,6 +177,8 @@ async function fetchDataFromBackend() {
 
 
   .container {
+    
+    display: flex;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -185,19 +187,21 @@ async function fetchDataFromBackend() {
     min-height: 100vh; /* 设置最小高度，确保内容撑开整个视口 */
   }
   
-  .title {
+  /* .title {
     text-align: center;
     margin-bottom: 20px;
-  }
+  } */
   
   h1 {
     color: #0a0909;
+    text-align: center;
     font-size: 32px;
     margin-bottom: 10px;
   }
   
   h2 {
     color: #333;
+    text-align: center;
     font-size: 18px;
   }
   
@@ -232,8 +236,13 @@ async function fetchDataFromBackend() {
   }
   
   p {
-    margin-top: 5px;
-    color: #555;
+    max-width: 300px; /* 设置框的最大宽度 */
+    margin: 20px auto; /* 居中并设置上下边距 */
+    padding: 10px; /* 设置内边距 */
+    border: 1px solid #ccc; /* 添加边框 */
+    box-sizing: border-box; 
+    word-wrap: break-word; /* 或使用 overflow-wrap: break-word; */
+    white-space: pre-wrap; /* 保留空格并允许换行 */
   }
   
   button {

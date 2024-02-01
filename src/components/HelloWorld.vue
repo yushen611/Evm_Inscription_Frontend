@@ -51,15 +51,35 @@ const fetchEventLogs = async () => {
     <p v-if="loading">Loading...</p>
     <div v-if="eventLog.data">
       <h3>Data in Event Log:</h3>
-      <pre>{{ eventLog.data }}</pre>
+      <p>{{ eventLog.data }}</p>
     </div>
     <div v-if="eventLog.id">
       <h3>Data ID in Event Log:</h3>
-      <pre>{{ eventLog.id }}</pre>
+      <p>{{ eventLog.id }}</p>
     </div>
   </div>
 </template>
 
 <style scoped>
 /* 你可以在这里添加样式 */
+input.fixedInput {
+    width: 300px;
+    height: 40px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  p {
+    max-width: 300px; /* 设置框的最大宽度 */
+    margin: 20px auto; /* 居中并设置上下边距 */
+    padding: 10px; /* 设置内边距 */
+    border: 1px solid #ccc; /* 添加边框 */
+    box-sizing: border-box; 
+    word-wrap: break-word; /* 或使用 overflow-wrap: break-word; */
+    white-space: pre-wrap; /* 保留空格并允许换行 */
+  }
+  
 </style>
