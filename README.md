@@ -1,5 +1,5 @@
 ## Project Intro  
-(ppt for this project)[https://gamma.app/docs/SemiToken-Inscription-on-EVM-25abptmvmyjwgf2?mode=doc]
+[PPT for this project](https://gamma.app/docs/SemiToken-Inscription-on-EVM-25abptmvmyjwgf2?mode=doc)
 
 ## Project Setup
 
